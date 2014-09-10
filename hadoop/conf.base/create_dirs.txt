@@ -1,0 +1,23 @@
+HDFS
+# sudo -u hdfs hadoop fs -mkdir /user
+# sudo -u hdfs hadoop fs -mkdir /user/history
+# sudo -u hdfs hadoop fs -chmod -R 1777 /user/history
+# sudo -u hdfs hadoop fs -chown mapred:hadoop /user/history
+# sudo -u hdfs hadoop fs -mkdir -p /var/log/hadoop-yarn
+# sudo -u hdfs hadoop fs -chown yarn:mapred /var/log/hadoop-yarn
+# sudo -u hdfs hadoop fs -mkdir /user/history/done_intermediate
+# sudo -u hdfs hadoop fs -chown mapred /user/history/done_intermediate
+
+local
+
+# mkdir -p /data/1/nn
+# chown -R hdfs:hdfs /data/1/nn
+# chmod 700 /data/1/nn
+
+# mkdir -p /data/1/dn
+# chown -R hdfs:hdfs /data/1/dn
+# chmod 700 /data/1/dn
+
+# mkdir -p /data/1/yarn/{local,logs}
+# chown -R yarn:yarn /data/1/yarn/*
+
