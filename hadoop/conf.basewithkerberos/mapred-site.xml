@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+        <property>
+         <name>mapreduce.framework.name</name>
+         <value>yarn</value>
+        </property>
+
+        <property>
+         <name>mapreduce.jobhistory.address</name>
+         <value>z3.example.com:10020</value>
+        </property>
+
+        <property>
+         <name>mapreduce.jobhistory.webapp.address</name>
+         <value>z3.example.com:19888</value>
+        </property>
+
+        <property>
+         <name>yarn.app.mapreduce.am.staging-dir</name>
+         <value>/user</value>
+        </property>
+
+        <property>
+              <name>hadoop.proxyuser.mapred.groups</name>
+              <value>*</value>
+        </property>
+
+        <property>
+              <name>hadoop.proxyuser.mapred.hosts</name>
+              <value>*</value>
+        </property>
+
+        <property>
+                <name>mapreduce.reduce.shuffle.parallelcopies</name>
+                <value>20</value>
+        </property>
+
+<!-- kerberos start -->
+
+        <property>
+                <name>mapreduce.jobhistory.keytab</name>
+                <value>/etc/hadoop/conf/mapred.keytab</value>
+        </property>
+
+        <property>
+                <name>mapreduce.jobhistory.principal</name>
+                <value>mapred/_HOST@EXAMPLE.COM</value>
+        </property>
+
+        <property>
+                <name>mapreduce.jobhistory.http.policy</name>
+                <value>HTTP_ONLY</value>
+        </property>
+<!-- kerberos end -->
+
+</configuration>

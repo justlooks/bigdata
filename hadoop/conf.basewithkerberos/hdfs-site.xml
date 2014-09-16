@@ -1,0 +1,152 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+       <property>
+                <name>dfs.namenode.name.dir</name>
+                <value>file:///data/1/nn</value>
+       </property>
+
+        <property>
+                <name>dfs.datanode.data.dir</name>
+                <value>file:///data/1/dn</value>
+        </property>
+
+
+      <property>
+                <name>dfs.permissions.superusergroup</name>
+                <value>hadoop</value>
+       </property>
+
+        <property>
+                <name>dfs.datanode.max.transfer.threads</name>
+                <value>4096</value>
+        </property>
+        <property>
+                <name>dfs.namenode.http-address</name>
+                <value>z1.example.com:50070</value>
+        </property>
+        <property>
+                <name>dfs.replication</name>
+                <value>2</value>
+        </property>
+
+<!-- kerberos start -->
+
+<!-- for namenode -->
+
+        <property>
+                <name>dfs.block.access.token.enable</name>
+                <value>true</value>
+        </property>
+
+        <property>
+                <name>dfs.namenode.keytab.file</name>
+                <value>/etc/hadoop/conf/hdfs.keytab</value>
+        </property>
+	
+        <property>
+                <name>dfs.namenode.kerberos.principal</name>
+                <value>hdfs/_HOST@EXAMPLE.COM</value>
+        </property>
+
+        <property>
+                <name>dfs.namenode.kerberos.internal.spnego.principal</name>
+                <value>hdfs/_HOST@EXAMPLE.COM</value>
+        </property>
+
+        <property>
+                <name>dfs.http.policy</name>
+                <value>HTTP_ONLY</value> 
+<!--                <value>HTTP_AND_HTTPS</value>  -->
+        </property>
+
+<!-- for namenode end -->
+
+<!-- for datanode -->
+        <property>
+                <name>dfs.datanode.data.dir.perm</name>
+                <value>700</value>
+        </property>
+
+        <property>
+                <name>dfs.datanode.address</name>
+                <value>0.0.0.0:1004</value>
+        </property>
+
+        <property>
+                <name>dfs.datanode.http.address</name>
+                <value>0.0.0.0:1006</value>
+        </property>
+
+        <property>
+                <name>dfs.datanode.keytab.file</name>
+                <value>/etc/hadoop/conf/hdfs.keytab</value>
+        </property>
+
+        <property>
+                <name>dfs.datanode.kerberos.principal</name>
+                <value>hdfs/_HOST@EXAMPLE.COM</value>
+        </property>
+
+
+<!-- for datanode end -->
+
+
+<!-- for https  (opened if dfs.http.policy set https) -->
+        <property>
+                <name>dfs.https.enable</name>
+                <value>true</value>
+        </property>
+        <property>
+                <name>dfs.namenode.https-address</name>
+                <value>z1.example.com:50470</value>
+        </property>
+
+        <property>
+                <name>dfs.https.port</name>
+                <value>50470</value>
+        </property>
+
+        <property>
+                <name>dfs.datanode.https.address</name>
+                <value>0.0.0.0:50470</value>
+        </property>
+
+        <property>
+                <name>dfs.namenode.kerberos.https.principal</name>
+                <value>HTTP/_HOST@EXAMPLE.COM</value>
+        </property>
+
+        <property>
+                <name>dfs.datanode.kerberos.https.principal</name>
+                <value>HTTP/_HOST@EXAMPLE.COM</value>
+        </property>
+
+        <property>
+                <name>dfs.encrypt.data.transfer</name>
+                <value>true</value>
+        </property>
+
+<!-- for https end -->
+
+<!-- for webhdfs -->
+        <property>
+                <name>dfs.webhdfs.enabled</name>
+                <value>true</value>
+        </property>
+
+        <property>
+                <name>dfs.web.authentication.kerberos.keytab</name>
+                <value>/etc/hadoop/conf/http.keytab</value>
+        </property>
+
+        <property>
+                <name>dfs.web.authentication.kerberos.principal</name>
+                <value>HTTP/_HOST@EXAMPLE.COM</value>
+        </property>
+<!-- for webhdfs end -->
+
+<!-- kerberos end -->
+
+</configuration>

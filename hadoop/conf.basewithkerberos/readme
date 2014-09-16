@@ -1,0 +1,60 @@
+属主及权限分配
+
+Local dfs.namenode.name.dir (dfs.name.dir is deprecated but will also work) hdfs:hdfs drwx------
+
+Local dfs.datanode.data.dir (dfs.data.dir is deprecated but will also work) hdfs:hdfs drwx------
+
+Local yarn.nodemanager.local-dirs yarn:yarn drwxr-xr-x
+
+Local yarn.nodemanager.log-dirs yarn:yarn drwxr-xr-x
+
+Local container-executor root:yarn --Sr-s---
+
+Local conf/container-executor.cfg root:yarn r--------
+
+Local HDFS_LOG_DIR hdfs:hdfs drwxrwxr-x
+
+Local $YARN_LOG_DIR yarn:yarn drwxrwxr-x
+
+Local MAPRED_LOG_DIR mapred:mapred drwxrwxr-x
+
+HDFS / (root directory) hdfs:hadoop drwxr-xr-x
+
+HDFS yarn.nodemanager.remote-app-log-dir yarn:hadoop drwxrwxrwxt
+
+HDFS mapreduce.jobhistory.intermediate-done-dir mapred:hadoop drwxrwxrwxt
+
+HDFS mapreduce.jobhistory.done-dir mapred:hadoop drwxr-x--- 
+
+添加环境变量
+# vi /etc/default/hadoop-hdfs-datanode
+export HADOOP_SECURE_DN_USER=hdfs
+export HADOOP_SECURE_DN_PID_DIR=/var/run/hadoop-hdfs
+export HADOOP_SECURE_DN_LOG_DIR=/var/log/hadoop-hdfs
+export JSVC_HOME=/usr/lib/bigtop-utils/
+
+
+# useradd alex
+在运行节点上创建principal
+
+# su - alex
+$ klist -e
+klist: No credentials cache found (ticket cache FILE:/tmp/krb5cc_500)
+$ kadmin -p quick/admin
+kadmin:  addprinc -randkey alex/z1.example.com@EXAMPLE.COM
+创建keytab文件
+kadmin:  xst -k alex.keytab alex/z1.example.com
+$ chmod 400 alex.keytab
+签入票据
+$ kinit -k -t alex.keytab alex/z1.example.com@EXAMPLE.COM
+$ klist -e
+Ticket cache: FILE:/tmp/krb5cc_500
+Default principal: alex/z1.example.com@EXAMPLE.COM
+
+Valid starting     Expires            Service principal
+09/16/14 15:25:13  09/17/14 15:25:13  krbtgt/EXAMPLE.COM@EXAMPLE.COM
+        renew until 09/16/14 15:25:13, Etype (skey, tkt): aes256-cts-hmac-sha1-96, aes256-cts-hmac-sha1-96
+
+执行应用程序
+
+$ yarn jar /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar pi 2 100

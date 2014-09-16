@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+        <property>
+                <name>fs.defaultFS</name>
+                <value>hdfs://z1.example.com:8020</value>
+        </property>
+
+        <property>
+              <name>hadoop.proxyuser.mapred.groups</name>
+              <value>*</value>
+        </property>
+
+        <property>
+              <name>hadoop.proxyuser.mapred.hosts</name>
+              <value>*</value>
+        </property>
+<!-- kerberos start -->
+	<property>
+		<name>hadoop.security.authentication</name>
+		<value>kerberos</value> <!-- A value of "simple" would disable security. -->
+	</property>
+
+	<property>
+		<name>hadoop.security.authorization</name>
+		<value>true</value>
+	</property>
+
+<!-- kerberos end -->
+</configuration>
