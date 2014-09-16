@@ -33,6 +33,17 @@ export HADOOP_SECURE_DN_PID_DIR=/var/run/hadoop-hdfs
 export HADOOP_SECURE_DN_LOG_DIR=/var/log/hadoop-hdfs
 export JSVC_HOME=/usr/lib/bigtop-utils/
 
+host文件设置
+# cat /etc/hosts
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+192.168.10.240           kerberos.example.com
+192.168.10.241  z1.example.com  z1
+192.168.10.242  z2.example.com  z2
+192.168.10.243  z3.example.com  z3
+
+
 
 # useradd alex
 在运行节点上创建principal
