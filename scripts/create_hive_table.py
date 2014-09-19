@@ -19,7 +19,7 @@ part_comment = "\n\n/*\n添加分区：\n./gen_partition.sh %s '2014-09-15' '201
 
 tab_options = '''PARTITIONED BY (dt STRING)
 ROW FORMAT DELIMITED
-FIELDS TERMINATED BY '\\011'
+FIELDS TERMINATED BY '\\001'
 LINES TERMINATED BY '\\n'
 STORED AS TEXTFILE;'''
 
