@@ -12,7 +12,7 @@
 备份存放目录  /data/mysqlbackup/CH_backup/实例名/日期,目录中备份以库为单位分成多个压缩文件
 
 关于备份结果展示的相关代码
-
+```
 # tree /var/www/html/dbbackup/
 /var/www/html/dbbackup/
 ├── archive
@@ -27,7 +27,7 @@
 ├── index.php
 └── today
     └── index.php
-
+```
 
 访问地址为
 http://192.168.26.251/dbbackup/
