@@ -49,8 +49,10 @@ crontab
 前置要求
 192.168.26.171 
 创建mysql备份账号
+```
 #create user 'bak'@'192.168.26.171' identified by 'xxx';
 #grant all on *.* to 'bak'@'192.168.26.171';
+```
 
 并安装expect  yum install expect
 
