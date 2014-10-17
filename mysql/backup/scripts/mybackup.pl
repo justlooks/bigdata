@@ -12,19 +12,21 @@ use Net::SMTP;
 #grant all on *.* to 'bak'@'192.168.26.171';
 
 my %dbs_info = (
-                                 'ch171_11db' => { 'user' => 'bak', 'pd'  => 'bak', 'host' => '192.168.26.171', 'port' => 3370, 'policy' => 'every day' },
-                                 'ch171_10db' => { 'user' => 'bak', 'pd'  => 'bak', 'host' => '192.168.26.171', 'port' => 3371, 'policy' => 'every day' },
-                                 'ch171_9db' => { 'user' => 'bak', 'pd'  => 'bak', 'host' => '192.168.26.171', 'port' => 3373, 'policy' => 'every day' },
-                                 'ch171_8db' => { 'user' => 'bak', 'pd'  => 'bak', 'host' => '192.168.26.171', 'port' => 3372, 'policy' => 'every day' },
+                                 'ch171_11db' => { 'user' => 'bak', 'pd'  => 'bak', 'host' => '192.168.26.171', 'port' => 3370, 'policy' => 'every day', 'ignoretab' => 'no' },
+                                 'ch171_10db' => { 'user' => 'bak', 'pd'  => 'bak', 'host' => '192.168.26.171', 'port' => 3371, 'policy' => 'every day', 'ignoretab' => 'no' },
+                                 'ch171_9db' => { 'user' => 'bak', 'pd'  => 'bak', 'host' => '192.168.26.171', 'port' => 3373, 'policy' => 'every day', 'ignoretab' => 'yes' },
+                                 'ch171_8db' => { 'user' => 'bak', 'pd'  => 'bak', 'host' => '192.168.26.171', 'port' => 3372, 'policy' => 'every day', 'ignoretab' => 'no' },
 #                                 'ar18_tst_4' => { 'user' => 'bak', 'pd'  => 'bak', 'host' => '192.168.10.18', 'port' => 3310, 'policy' => 'once a week 6' },
 #                                 'ar18_prd_3' => { 'user' => 'bak', 'pd'  => 'bak', 'host' => '192.168.10.18', 'port' => 3370, 'policy' => 'every day' },
 #                                 'ar18_demo_5' => { 'user' => 'bak', 'pd'  => 'bak', 'host' => '192.168.10.18', 'port' => 3350, 'policy' => 'once a month 10' },
                            );
 
 my $basedir = "/data/mysqlbackup/";
+my $filterfile = "filter.list";
 my $current = strftime("%Y%m%d",localtime);
 my (undef,undef,undef,$mday,undef,undef,$wday,undef,undef) = localtime(time());
 my @ignore_db = qw/ information_schema performance_schema mysql dbadb /;
+
 
 # send report to email
 sub send_msg {
@@ -97,18 +99,14 @@ sub get_schemas {
 }
 
 sub do_dump {
-        my ($inst,$db,$db_info) = @_;
-        my $mybasedir;
-        if( $inst =~ m/^ch.*/ ){
-                $mybasedir = $basedir . 'CH_backup';
-        }elsif( $inst =~ m/^ar.*/ ){
-                $mybasedir = $basedir . 'AR_backup';
+        my ($path,$db,$db_info,$ignore_tabs) = @_;
+        my $igoption = "";
+        for(my $i=0;$i<=$#$ignore_tabs;$i++){
+                $igoption .= "--ignore-table=${db}.${$ignore_tabs}[$i] ";
         }
-        my $path = "${mybasedir}/${inst}/${current}";
-        unless (-e $path) {
-                make_path($path) or die $!;
-        }
-        my $re = `( mysqldump -h ${$db_info}{'host'} -u ${$db_info}{'user'} -P ${$db_info}{'port'} -p${$db_info}{'pd'} $db | gzip -c - > $path/${db}_${current}.sql.gz ) 2>&1`;
+   #     my $re = `( mysqldump -h ${$db_info}{'host'} -u ${$db_info}{'user'} -P ${$db_info}{'port'} -p${$db_info}{'pd'} $db | gzip -c - > $path/${db}_${current}.sql.gz ) 2>&1`;
+        my $re = `( mysqldump -h ${$db_info}{'host'} -u ${$db_info}{'user'} -P ${$db_info}{'port'} -p${$db_info}{'pd'} $igoption $db | gzip -c - > $path/${db}.sql.gz ) 2>&1`;
+        print "mysqldump -h ${$db_info}{'host'} -u ${$db_info}{'user'} -P ${$db_info}{'port'} -p${$db_info}{'pd'} $igoption $db | gzip -c - > $path/${db}.sql.gz\n";
         if( $? == 0 ){
                 print "dump ok\n";
                 return "success";
@@ -135,8 +133,7 @@ sub cp_report {
         </tr>
 END_TAG
 
-
-dy><table border="1" style="color:chartreuse" bgcolor="#000000">';
+        print FILE '<html><body><table border="1" style="color:chartreuse" bgcolor="#000000">';
         print FILE "$TITLE\n";
 
         for my $i (0..$#$ref_content){
@@ -174,6 +171,28 @@ for my $name (keys %dbs_info){
         }
         if($do_flag == 1){
                 print "$name Backup start...\n";
+                my $mybasedir;
+                if( $name =~ m/^ch.*/ ){
+                        $mybasedir = $basedir . 'CH_backup';
+                }elsif( $name =~ m/^ar.*/ ){
+                        $mybasedir = $basedir . 'AR_backup';
+                }
+                my $path = "${mybasedir}/${name}/${current}";
+                unless (-e $path) {
+                        make_path($path) or die $!;
+                }
+        # read the ignore tables info
+                my %ignoretab = ();
+                if( $dbs_info{$name}{'ignoretab'} eq "yes" ){
+                        print "read filter file -> ${mybasedir}/${name}/${filterfile}\n";
+                        open FILE,"<","${mybasedir}/${name}/${filterfile}" or die;
+                        while(<FILE>){
+                                chomp;
+                                my ($key,$value)=split('\.',$_);
+                                push @{$ignoretab{$key}},$value;
+                        }
+                        close FILE;
+                }
                 my $dbh = get_dbh($dbs_info{$name});
                 my $dbs = get_schemas($dbh);
                 foreach my $db (@$dbs){
@@ -181,9 +200,9 @@ for my $name (keys %dbs_info){
                                 print "i ignore ".$db."\n";
                         }else{
                                 my $start = time();
-                                my $re = do_dump($name,$db,$dbs_info{$name});
+                                #my $re = do_dump($name,$db,$dbs_info{$name});
+                                my $re = do_dump($path,$db,$dbs_info{$name},$ignoretab{$db});
                                 my $end = time();
-                                print "i get ".$db."\n";
                                 push @result,[$start,$end,$end-$start,$name,$db,$re];
                         }
                 }
@@ -200,4 +219,3 @@ if( @result ){
                 cp_report(\@result);
 }
 
-i
