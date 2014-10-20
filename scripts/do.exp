@@ -1,0 +1,26 @@
+#!/usr/bin/expect -f
+#
+# usage: expect -f func remoteuser remotepss remoteip command
+#
+# Author: Alex
+################################
+
+set timeout 30
+set username [lindex $argv 0]
+set drowssap [lindex $argv 1]
+set remotehost [lindex $argv 2]
+set commd [lindex $argv 3]
+
+spawn ssh $username@$remotehost "$commd"
+expect {
+-re ".*es.*n.*" {
+exp_send "yes\r"
+exp_continue
+}
+-re ".*word.*" {
+exp_send "$drowssap\r"
+}
+}
+expect eof
+exit
+

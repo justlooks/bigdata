@@ -5,3 +5,9 @@ create_hive_table.py
 
 2.用于upload scribe产生的本地文件到hdfs  
 local_to_hdfs.sh
+
+3.用于监控hive jdbc错误，在一定时间段外的错误信息将被忽略(该脚本依赖于do.exp)  
+check_hive_err.sh
+
+4.用于自动ssh提交命令在远程机器执行(依赖于安装expect)    
+do.exp
