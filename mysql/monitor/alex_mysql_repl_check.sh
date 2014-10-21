@@ -1,8 +1,12 @@
 #!/bin/bash
 
+STATE_OK=0
+STATE_WARNING=1
+STATE_CRITICAL=2
+STATE_UNKNOWN=3
+
 IO="false"
 SQL="false"
-
 
 while getopts H:P:M:u:p: arg;do
         case $arg in
@@ -26,25 +30,24 @@ if [ "$mode" = "repl" ];then
         fi
 
         if [ "$IO" = "true" -a $SQL = "true" ];then
-                echo " replication is ok ";\rm /tmp/alex_$$;exit 0
+                echo " replication is ok ";\rm /tmp/alex_$$;exit ${STATE_OK}
         elif [ "$IO" = "true" ];then
 
                 echo "SQL thread is stop"
-                $(grep -oP '(?<=Last_IO_Error: ).*$' /tmp/alex_$$);\rm /tmp/alex_$$;exit 1
+                $(grep -oP '(?<=Last_IO_Error: ).*$' /tmp/alex_$$);\rm /tmp/alex_$$;exit ${STATE_WARNING}
         elif [ "$SQL" = "true" ];then
                 echo "IO thread is stop"
-                $(grep -oP '(?<=Last_SQL_Error: ).*$' /tmp/alex_$$);\rm /tmp/alex_$$;exit 1
+                $(grep -oP '(?<=Last_SQL_Error: ).*$' /tmp/alex_$$);\rm /tmp/alex_$$;exit ${STATE_WARNING}
         else
-                echo both thread is broken;\rm /tmp/alex_$$;exit 3
+                echo both thread is broken;\rm /tmp/alex_$$;exit ${STATE_CRITICAL}
         fi
 # check if instance is alive
 elif [ "$mode" = "ping" ];then
         re=$(mysqladmin -h$host -P$port -u$username -p$pass ping)
         if [ "$re" = "mysqld is alive" ];then
-                echo "mysql instance is alive";exit 0
+                echo "mysql instance is alive";exit ${STATE_OK}
         else
-                echo "mysql is crashed";exit 1
+                echo "mysql is crashed";exit ${STATE_CRITICAL}
         fi
 fi
 echo host $host port $port user $username  pass $pass mode $mode
-
