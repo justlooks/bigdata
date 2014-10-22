@@ -1,0 +1,77 @@
+scribe安装
+cd libevent-1.4
+./configure
+make
+make install
+
+刷新动态链接库:
+
+/sbin/ldconfig
+
+tar zxvf boost_1_44_0.tar.gz
+cd boost_1_44_0
+./bootstrap.sh --prefix=/usr/local/boost
+./bjam --prefix=/usr/local/boost install
+echo "/usr/local/boost/lib/" >> /etc/ld.so.conf
+/sbin/ldconfig
+
+thrif
+
+wget http://archive.apache.org/dist/thrift/0.9.0/thrift-0.9.0.tar.gz
+
+tar zxvf thrift-0.9.0.tar.gz
+
+cd thrift-0.9.0/
+./configure  --with-qt4=no --with-java=no --with-php=no --with-perl=no   --with-libevent --with-boost=/usr/local/boost/
+如果出现 libcrypto required 错误
+sudo yum install openssl-devel.x86_64
+make
+make install
+
+cd contrib/fb303/
+./bootstrap.sh
+make
+make install
+
+
+git clone https://github.com/jerry6290/scribe
+
+cd scribe
+
+
+./bootstrap.sh --with-boost=/usr/local/boost --prefix=/usr/local/scribe
+./configure --with-boost=/usr/local/boost --prefix=/usr/local/scribe --enable-hdfs  CPPFLAGS="-L/root/scribe/hadoop/lib -DHAVE_INTTYPES_H -DHAVE_NETINET_IN_H" LDFLAGS="-L/root/scribe/hadoop/lib -I/usr/local/boost/include"
+
+
+./configure --with-boost=/usr/local/boost --prefix=/usr/local/scribe --enable-hdfs  CPPFLAGS="-I/usr/java/jdk1.7.0_45/include -I/usr/java/jdk1.7.0_45/include/linux -DHAVE_INTTYPES_H -DHAVE_NETINET_IN_H"
+
+# yum install hadoop-libhdfs
+# yum install hadoop-libhdfs-devel.x86_64
+
+make
+make install
+
+这里有可能会报错,C Compiler 之类的,去看config.log发现是gcc -ljvm 和 gcc -lhdfs找不到,
+如果是openjdk
+ln -s  /usr/lib/jvm/jre/lib/amd64/server/libjvm.so /usr/lib64/libjvm.so
+ln -s  /usr/lib/jvm/jre/lib/amd64/server/libjvm.so /usr/lib/libjvm.so
+如果是安装版
+ln -s $JAVA_HOME/jre/lib/amd64/server/libjvm.so /usr/lib64/libjvm.so
+ln -s $JAVA_HOME/jre/lib/amd64/server/libjvm.so /usr/lib/libjvm.so
+
+
+# vi /etc/ld.so.conf.d/scribe.conf
+/usr/local/lib/
+
+cp examples/scribe_ctrl /sbin/
+cp examples/scribe_cat /sbin/
+
+install hadoop lib
+cp /root/scribe/hadoop/lib/* /usr/local/lib
+启动时
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:/usr/lib
+
+注意点：
+hdfs client jar需要加在classpath里面
+

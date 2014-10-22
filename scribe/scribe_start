@@ -1,0 +1,12 @@
+在运行前请先su到hdfs用户
+
+启动命令解决（hdfsBuilderConnect(forceNewInstance=1, nn=default, port=0, kerbTicketCachePath=(NULL), userName=(NUL）问题
+
+# find /usr/lib/hadoop/ -name '*.jar'|awk '{ printf("export CLASSPATH=%s:$CLASSPATH\n", $0); }' >> /tmp/env
+# find /usr/lib/hadoop-hdfs/ -name '*.jar'|awk '{ printf("export CLASSPATH=%s:$CLASSPATH\n", $0); }' >> /tmp/env
+
+
+开发
+ /usr/local/scribe/bin/scribed /usr/local/scribe/conf/dev_all.conf 2>&1 | tee logs/scribe_dev.log
+
+
