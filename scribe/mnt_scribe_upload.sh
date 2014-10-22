@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # need add "nagios  ALL=NOPASSWD: /usr/local/nagios/libexec/check_hdfsupload.sh" in file /etc/sudoers
+# comment Defaults    requiretty
+# Defaults   !visiblepw  ->  Defaults   visiblepw 
 
 export LANG=en_US.UTF-8
 
