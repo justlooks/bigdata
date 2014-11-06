@@ -11,3 +11,6 @@ check_hive_err.sh
 
 4.用于自动ssh提交命令在远程机器执行(依赖于安装expect)    
 do.exp
+
+5.用于监控zookeeper状态脚本(TODO)  
+check_zookeeper.py
