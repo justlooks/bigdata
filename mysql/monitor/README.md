@@ -5,3 +5,6 @@ alex_mysql_repl_check.sh
 
 2.用于检测keepalived的vip是否切换的脚本  
 alex_keepalived_check.sh
+
+3.用于检测是否MySQL实例中昨天binary log总量超过阀值  
+alex_mysql_binlogsize_check.sh
