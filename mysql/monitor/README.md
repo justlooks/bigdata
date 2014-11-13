@@ -8,3 +8,6 @@ alex_keepalived_check.sh
 
 3.用于检测是否MySQL实例中昨天binary log总量超过阀值  
 alex_mysql_binlogsize_check.sh
+
+4.用于检测是否MySQL Error log中有错误信息  
+alex_mysql_logerr_check.sh
