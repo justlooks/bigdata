@@ -11,3 +11,6 @@ alex_mysql_binlogsize_check.sh
 
 4.用于检测是否MySQL Error log中有错误信息  
 alex_mysql_logerr_check.sh
+
+5.查看MySQL进程使用虚拟内存(VSZ)以及常驻内存(RSS)大小脚本  
+
