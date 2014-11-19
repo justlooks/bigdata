@@ -1,6 +1,6 @@
 脚本说明
 =================================================
-1.用于检测MySQL实例和replication是否正常(目前只有这两个功能，脚本后续开发中)  
+1.用于检测MySQL实例和replication是否正常,以及查询数据库Com_ops数目(目前只有这三个功能，脚本后续开发中)  
 alex_mysql_repl_check.sh
 
 2.用于检测keepalived的vip是否切换的脚本  
@@ -13,4 +13,7 @@ alex_mysql_binlogsize_check.sh
 alex_mysql_logerr_check.sh
 
 5.查看MySQL进程使用虚拟内存(VSZ)以及常驻内存(RSS)大小脚本  
+alex_mysql_mem_check.sh
 
+6.用于pnp4nagios 自定义template脚本(绘图数据由脚本alex_mysql_repl_check.sh采集)  
+alex_mysql_repl_check.php

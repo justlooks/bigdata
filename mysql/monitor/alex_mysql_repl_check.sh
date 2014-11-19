@@ -49,5 +49,10 @@ elif [ "$mode" = "ping" ];then
         else
                 echo "mysql is crashed";exit ${STATE_CRITICAL}
         fi
+# check Com_ops count
+elif [ "$mode" = "ops" ];then
+        mysql -h$host -P$port -u$username -p$pass -e "show global status" | awk 'BEGIN{msg="get op count |"}/Com_select|Com_insert|Com_update/{msg=msg$1"="$2";;;0;"}END{print msg}'
+        exit ${STATE_OK}
+
 fi
 echo host $host port $port user $username  pass $pass mode $mode
