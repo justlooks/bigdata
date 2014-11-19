@@ -9,7 +9,7 @@ $COLS[5]="#ffff33";
 $COLS[6]="#006600";
 
 $opt[1] = ' --title "' . $this->MACRO['DISP_HOSTNAME'] . ' / ' . $this->MACRO['DISP_SERVICEDESC'] . '"';
-$ds_name[1] = "test";
+$ds_name[1] = $this->MACRO['DISP_SERVICEDESC'];
 $def[1] = "";
 $count=0;
 foreach ($this->DS as $KEY=>$VAL) {
