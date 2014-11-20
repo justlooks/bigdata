@@ -14,7 +14,7 @@ threhold=5
 for i in `ls $TGT`;do
 
 if [[ $i =~ ^[0-9]$ ]];then
-result=$(ls --time-style=full-iso -l ${TGT}/${i}/binlog | awk '{if($6~"'${date}'"){sum+=$5;}}END{print sum/1024/1024/1024">'${threhold}'"}' | bc)
+result=$(ls --time-style=full-iso -l ${TGT}/${i}/binlog | grep -v index$ | awk '{if($6~"'${date}'"){sum+=$5;}}END{print sum/1024/1024/1024">'${threhold}'"}' | bc)
 if [ ${result} -eq 0 ];then
 msg=${msg}" instance $i is ok";
 else
