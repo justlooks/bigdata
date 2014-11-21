@@ -74,5 +74,15 @@ elif [ "$mode" = "tmp" ];then
         mysql -h$host -P$port -u$username -p$pass -e "show global status" | awk 'BEGIN{msg="tempoary table or file |"}/(Created_tmp_disk_tables|Created_tmp_files|Created_tmp_tables)[^_]/{msg=msg$1"="$2";;;0;"}END{print msg}'
         exit ${STATE_OK}
 
+# change buffer status (innodb_change_buffering option default value is all,that's means buffer insert ,delete-mark and purge operate
+elif [ "$mode" = "cbuff" ];then
+        mysql -h$host -P$port -u$username -p$pass -e "show global status" | awk 'BEGIN{msg="change buffer status |"}/(Innodb_ibuf_merges|Innodb_ibuf_merged_inserts|Innodb_ibuf_merged_deletes|Innodb_ibuf_merged_delete_marks)[^_]/{msg=msg$1"="$2";;;0;"}END{print msg}'
+        exit ${STATE_OK}
+
+elif [ "$mode" = "innopoolop" ];then
+        mysql -h$host -P$port -u$username -p$pass -e "show global status" | awk 'BEGIN{msg="innodb pool operation status |"}/(Innodb_rows_deleted|Innodb_rows_inserted|Innodb_rows_read|Innodb_rows_updated)[^_]/{msg=msg$1"="$2";;;0;"}END{print msg}'
+        exit ${STATE_OK}
+
+
 fi
 echo host $host port $port user $username  pass $pass mode $mode
