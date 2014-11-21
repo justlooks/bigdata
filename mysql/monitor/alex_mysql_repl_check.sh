@@ -54,5 +54,25 @@ elif [ "$mode" = "ops" ];then
         mysql -h$host -P$port -u$username -p$pass -e "show global status" | awk 'BEGIN{msg="get op count |"}/Com_select|Com_insert|Com_update/{msg=msg$1"="$2";;;0;"}END{print msg}'
         exit ${STATE_OK}
 
+elif [ "$mode" = "conn" ];then
+        mysql -h$host -P$port -u$username -p$pass -e "show global status" | awk 'BEGIN{msg="get connect status |"}/(Aborted_connects|Connections|Max_used_connections|Threads_connected)[^_]/{msg=msg$1"="$2";;;0;"}END{print msg}'
+        exit ${STATE_OK}
+# you need check the query if Select_full_join or Select_range_check is not zero,
+elif [ "$mode" = "query" ];then
+        mysql -h$host -P$port -u$username -p$pass -e "show global status" | awk 'BEGIN{msg="get select status |"}/(Select_full_join|Select_full_range_join|Select_range|Select_range_check|Select_scan)[^_]/{msg=msg$1"="$2";;;0;"}END{print msg}'
+        exit ${STATE_OK}
+# check sort status ,if sort_merge_passes is large ,you need increase sort_buffer_size
+elif [ "$mode" = "sort" ];then
+        mysql -h$host -P$port -u$username -p$pass -e "show global status" | awk 'BEGIN{msg="get sort status |"}/(Sort_merge_passes|Sort_range|Sort_rows|Sort_scan)[^_]/{msg=msg$1"="$2";;;0;"}END{print msg}'
+        exit ${STATE_OK}
+elif [ "$mode" = "tpool" ];then
+        mysql -h$host -P$port -u$username -p$pass -e "show global status" | awk 'BEGIN{msg="thread pool status |"}/(Threadpool_threads|Threadpool_idle_threads)[^_]/{msg=msg$1"="
+$2";;;0;"}END{print msg}'
+        exit ${STATE_OK}
+
+elif [ "$mode" = "tmp" ];then
+        mysql -h$host -P$port -u$username -p$pass -e "show global status" | awk 'BEGIN{msg="tempoary table or file |"}/(Created_tmp_disk_tables|Created_tmp_files|Created_tmp_tables)[^_]/{msg=msg$1"="$2";;;0;"}END{print msg}'
+        exit ${STATE_OK}
+
 fi
 echo host $host port $port user $username  pass $pass mode $mode
