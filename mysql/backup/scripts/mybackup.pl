@@ -105,7 +105,8 @@ sub do_dump {
                 $igoption .= "--ignore-table=${db}.${$ignore_tabs}[$i] ";
         }
    #     my $re = `( mysqldump -h ${$db_info}{'host'} -u ${$db_info}{'user'} -P ${$db_info}{'port'} -p${$db_info}{'pd'} $db | gzip -c - > $path/${db}_${current}.sql.gz ) 2>&1`;
-        my $re = `( mysqldump -h ${$db_info}{'host'} -u ${$db_info}{'user'} -P ${$db_info}{'port'} -p${$db_info}{'pd'} $igoption $db | gzip -c - > $path/${db}.sql.gz ) 2>&1`;
+# take care! when you have DDL operation during mysqldump ,--single-transaction option will cause the table which DDL on lost data see http://www.percona.com/blog/2012/03/23/best-kept-mysqldump-secret/  ,you can use --lock-all-tables option to disallow DDL during mysqldump running
+        my $re = `( mysqldump --single-transaction -h ${$db_info}{'host'} -u ${$db_info}{'user'} -P ${$db_info}{'port'} -p${$db_info}{'pd'} $igoption $db | gzip -c - > $path/${db}.sql.gz ) 2>&1`;
         print "mysqldump -h ${$db_info}{'host'} -u ${$db_info}{'user'} -P ${$db_info}{'port'} -p${$db_info}{'pd'} $igoption $db | gzip -c - > $path/${db}.sql.gz\n";
         if( $? == 0 ){
                 print "dump ok\n";
