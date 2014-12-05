@@ -14,3 +14,6 @@ do.exp
 
 5.用于监控zookeeper状态脚本(TODO)  
 check_zookeeper.py
+
+6.用于监控HDFS DN 的磁盘使用情况，以及日志目录的大小情况  
+check_hadoop_volume.pl
