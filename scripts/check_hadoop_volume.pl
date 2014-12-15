@@ -49,16 +49,18 @@ for(my $i=0;$i<=$#dirs;$i++){
 
 }
 
-my $log_size = `du -sh $log_dir | grep -oP '[0-9.]+'`;
+my $log_size = `du -s $log_dir | grep -oP '[0-9.]+'`;
 chomp($log_size);
-my $judge = `echo "$log_size > $log_threhold" | bc`;
+my $g_logsize = $log_size/1024/1024/0124;
+my $judge = `echo "$g_logsize > $log_threhold" | bc`;
 if($judge == 1){
         $flag = $STATE_CRITICAL if $flag < $STATE_CRITICAL;
         $msg .= "the log dir $log_dir large than $log_threhold G";
 }else{
         $flag = $STATE_OK if $flag < $STATE_OK;
-        $msg .= "log dir $log_dir is $log_size G";
+        $msg .= "log dir $log_dir is $g_logsize G";
 }
+
 
 print $msg;
 exit $flag;
