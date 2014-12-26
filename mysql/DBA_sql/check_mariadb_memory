@@ -1,0 +1,30 @@
+CREATE PROCEDURE show_buffers()
+	CONTAINS SQL
+	COMMENT 'Show information about buffers size'
+BEGIN
+	SET @memory_per_thread := (
+			  @@global.read_buffer_size
+			+ @@global.read_rnd_buffer_size
+			+ @@global.sort_buffer_size
+			+ @@global.thread_stack
+			+ @@global.join_buffer_size
+			+ @@global.binlog_cache_size
+		);
+	SET @global_memory := (
+			  @@global.innodb_buffer_pool_size
+			+ @@global.innodb_additional_mem_pool_size
+			+ @@global.innodb_log_buffer_size
+			+ (SELECT SUM(FULL_SIZE) FROM information_schema.KEY_CACHES) -- MySQL: @@global.key_buffer_size
+			+ @@global.aria_pagecache_buffer_size -- only MariaDB
+			+ @@global.query_cache_size
+		);
+	SELECT
+		  @global_memory AS global_memory
+		, @memory_per_thread AS memory_per_thread
+		, @@global.max_connections AS max_connections
+		, @memory_per_thread * @@global.max_connections AS max_session_memory
+		, CAST((@global_memory + @memory_per_thread * @@global.max_connections) AS UNSIGNED) AS max_total_memory
+		;
+	SET @memory_per_thread := NULL;
+	SET @global_memory := NULL;
+END;

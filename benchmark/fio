@@ -1,0 +1,12 @@
+安装
+# wget http://freecode.com/urls/3aa21b8c106cab742bf1f20d60629e3f
+# tar xvf fio-2.1.10.tar.gz
+# cd fio-2.1.10
+# ./configure && make && make install
+
+
+使用
+
+fio --name=seqw --rw=write --bs=128k --size=122374m
+
+fio --name=randw  --direct=true --rw=randwrite --max-jobs=30 -bs=16k -size=20G

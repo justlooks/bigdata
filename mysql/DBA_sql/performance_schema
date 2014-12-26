@@ -1,0 +1,29 @@
+document url
+https://mariadb.com/kb/en/mariadb/documentation/performance-schema/performance-schema-cond_instances-table/
+
+开启performance schema
+[mysqld]
+performance_schema=on
+
+performance_schema_accounts_size参数规定了accounts表的大小
+查看那些账号没有被使用(排除那些view，procedure的定义用户)
+
+SELECT DISTINCT
+	m.User, m.Host
+	FROM mysql.User m
+	LEFT JOIN performance_schema.ACCOUNTS p
+	ON m.User = p.USER AND p.HOST LIKE m.Host
+	LEFT JOIN information_schema.VIEWS is_v
+	ON is_v.SECURITY_TYPE = 'DEFINER' AND is_v.DEFINER LIKE CONCAT(m.User, '@', m.Host)
+	LEFT JOIN information_schema.ROUTINES is_r
+	ON is_r.SECURITY_TYPE = 'DEFINER' AND is_r.DEFINER LIKE CONCAT(m.User, '@', m.Host)
+	LEFT JOIN information_schema.EVENTS is_e
+	ON is_e.DEFINER LIKE CONCAT(m.User, '@', m.Host)
+	LEFT JOIN information_schema.TRIGGERS is_t
+	ON is_t.DEFINER LIKE CONCAT(m.User, '@', m.Host)
+	WHERE p.USER IS NULL
+		AND is_v.DEFINER IS NULL
+		AND is_r.DEFINER IS NULL
+		AND is_e.DEFINER IS NULL
+		AND is_t.DEFINER IS NULL
+	ORDER BY User, Host;
