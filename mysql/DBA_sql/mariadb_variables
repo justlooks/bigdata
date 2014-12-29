@@ -452,12 +452,12 @@ ssl_crl
 ssl_crlpath	
 ssl_key	
 storage_engine	InnoDB
-stored_program_cache	256
+stored_program_cache	256			   # 在binlog记录了sync_binlog个EVENT后将内容刷到磁盘，默认设置1，导致吞吐量降低，设置0则由文件系统来处理刷盘问题
 sync_binlog	1
-sync_frm	ON
-sync_master_info	0
-sync_relay_log	0
-sync_relay_log_info	0
+sync_frm	ON				   # 开启的话，每个非临时表创建，frm会被刷到磁盘上
+sync_master_info	0			   # 在sync_master_info个event之后replication slave将master.info信息刷到磁盘，设置0则由文件系统来处理刷盘问题
+sync_relay_log	0				   # 在sync_relay_log个event写到relay log上后replication slave将relay_log信息刷到磁盘，设置0则由文件系统来处理刷盘问题
+sync_relay_log_info	0			   # 在sync_relay_log_info个事务之后replication slave将relay.info信息刷到磁盘，设置0则由文件系统来处理刷盘问题
 system_time_zone	CST
 table_definition_cache	400			   # .frm文件的缓存(表定义)
 table_open_cache	1000			   # 所有线程可以打开表的总数，增加这个值需要增加系统的open file limit
