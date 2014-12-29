@@ -375,14 +375,14 @@ profiling	OFF
 profiling_history_size	15
 progress_report_time	5
 protocol_version	10
-query_alloc_block_size	8192
-query_cache_limit	1048576
-query_cache_min_res_unit	4096
-query_cache_size	0
-query_cache_strip_comments	OFF
-query_cache_type	ON
-query_cache_wlock_invalidate	OFF
-query_prealloc_size	8192
+query_alloc_block_size	8192			    # 在查询运行和parse时额外block分配的大小
+query_cache_limit	1048576			    # 超过这个值的结果不会被cache到query cache
+query_cache_min_res_unit	4096		    # 规定每次query cache分配至少需要分多少大小
+query_cache_size	0			    # 0禁止query cache,这时同时需要设置query_cache_type 为关闭
+query_cache_strip_comments	OFF		    # 设置为1时，server在比较查询的时候会将查询的comment去掉再计算hash值来比较
+query_cache_type	ON			    # 设置为0时，禁止query cache 设置为1时，只有SELECT SQL_NO_CACHE结果不被保存,设置为2时只有SELECT SQL_CACHE会被保存，
+query_cache_wlock_invalidate	OFF		    # 设置为0时，即使在对应的表上有write lock时，query cache也会将结果返回，设置为1时,客户端必须等待write lock被释放后才会收到结果
+query_prealloc_size	8192                         # session 级别buffer,运行复杂查询可以增加这个值，来减小在查询操作时更多内存分配的请求
 range_alloc_block_size	4096
 read_buffer_size	262144
 read_only	OFF
@@ -459,30 +459,30 @@ sync_master_info	0
 sync_relay_log	0
 sync_relay_log_info	0
 system_time_zone	CST
-table_definition_cache	400
-table_open_cache	1000
-thread_cache_size	200
-thread_concurrency	10
-thread_handling	one-thread-per-connection
-thread_pool_idle_timeout	60
-thread_pool_max_threads	500
-thread_pool_oversubscribe	3
-thread_pool_size	24
-thread_pool_stall_limit	500
-thread_stack	294912
+table_definition_cache	400			   # .frm文件的缓存(表定义)
+table_open_cache	1000			   # 所有线程可以打开表的总数，增加这个值需要增加系统的open file limit
+thread_cache_size	200			   # 如果thread pool功能被激活，这个会被忽略，thread被重用的数字
+thread_concurrency	10			   # 这个参数被废弃
+thread_handling	one-thread-per-connection	   # 当thread pool plugin被加载的时候显示为dynamically-loaded(如何加载??)pool-of-threads表示使用thread pool,no-threads 在debug时使用,表示用单线程处理所有链接 http://www.tuicool.com/articles/bAvMVrr
+thread_pool_idle_timeout	60    		   # 空闲的worker thread退出前等待时间
+thread_pool_max_threads	500			   # thread_pool最大线程数目(所有group能够创建的thread总数目),如果达到这个限制不会有新的线程创建
+thread_pool_oversubscribe	3		   # 内部参数not touch,每个group可以活跃的线程数目
+thread_pool_size	24			   # 线程pool的group个数，默认为系统cpu core数目,所有链接客户端分成group,
+thread_pool_stall_limit	500			   # 在超过这个时间后(ms),group将会创建新的thread,来运行其他statement,值比较小可以避免死锁，值较大可以避免创建过多的thread
+thread_stack	294912				   # 每个线程的stack大小，如果值太小会影响存储过程的递归call深度，以及复杂查询的处理能力
 time_format	%H:%i:%s
 time_zone	SYSTEM
 timed_mutexes	OFF
 tmp_table_size	524288000
 tmpdir	/tmp
-transaction_alloc_block_size	8192
-transaction_prealloc_size	4096
-tx_isolation	REPEATABLE-READ
-tx_read_only	OFF
-unique_checks	ON
+transaction_alloc_block_size	8192		   # 当transaction_prealloc_size不足容纳的时候，每次分配的值由transaction_alloc_block_size控制
+transaction_prealloc_size	4096		   # 每个事务会被分配一个memory pool,这个值规定初始分配大小
+tx_isolation	REPEATABLE-READ			   # 设置事务读写隔离级别SET TRANSACTION语句也可设置
+tx_read_only	OFF				   # 是否设置事务只读SET TRANSACTION语句也可设置
+unique_checks	ON				   # 在导入大批量数据时可以开启，但如果有重复数据还是会报错
 updatable_views_with_limit	YES
-use_stat_tables	NEVER
-userstat	OFF
+use_stat_tables	NEVER				   # mariadb提供引擎无关的统计信息表mysql.table_stats,mysql.index_stats,mysql.column_stats,这些信息可以提供给优化器使用,设置为NEVER则禁止优化器使用这些信息，设置为complementary，如果对应的存储引擎没有提供相关信息的话，优化器会使用这些表信息，设置为preferably，则优先从这些表中获取统计信息,当设置为NEVER，persistent for 语句不是analyze table语句的一部分，只有引擎相关的统计信息会被收集，,注意收集的时候全表扫描，有性能损耗，analyze table dsp_stat_hourly persistent for all;另外通过在slave中运行分析语句，将统计结果导入到master是比较好的方法https://mariadb.com/kb/en/mariadb/documentation/optimization-and-tuning/query-optimizations/statistics-for-optimizing-queries/engine-independent-table-statistics/
+userstat	OFF				   # 开启user statistics功能后，flush index_statistics;flush user_statistics;flush client_statistics;flush table_statistics;会生效,对应的show也一样,同时information_schema中会多对应的表https://mariadb.com/kb/en/mariadb/documentation/optimization-and-tuning/query-optimizations/statistics-for-optimizing-queries/user-statistics/
 version	10.0.12-MariaDB-log
 version_comment	MariaDB Server
 version_compile_machine	x86_64
