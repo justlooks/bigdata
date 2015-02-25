@@ -318,7 +318,7 @@ myisam_max_sort_file_size	9223372036853727232   # 当重建MYISAM索引时，排
 myisam_mmap_size	18446744073709551615
 myisam_recover_options	DEFAULT
 myisam_repair_threads	1			   # 如果设置大于1，每个MYSIAM表的索引都有自己的线程来做排序，修复工作，但会更耗CPU ，mem
-myisam_sort_buffer_size	134216704		   # 创建和排序MYISAM索引时用到的buffer大小
+myisam_sort_buffer_size	134216704		   # 创建(使用create index或者alter table add index时)和排序(用repair table时)MYISAM索引时用到的buffer大小
 myisam_stats_method	nulls_unequal
 myisam_use_mmap	OFF				   # 如果开启则使用memory mapping方式来读写表,memory mapping方式让MYISAM直接通过操作系统的PAGE CACHE来访问.MYD文件，更快捷
 net_buffer_length	8192
