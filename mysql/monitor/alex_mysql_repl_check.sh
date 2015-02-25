@@ -1,4 +1,8 @@
 #!/bin/bash
+#
+# usage : func -H host -P port -u user -p pass -M mode
+#
+#######################
 
 STATE_OK=0
 STATE_WARNING=1
@@ -83,6 +87,10 @@ elif [ "$mode" = "innopoolop" ];then
         mysql -h$host -P$port -u$username -p$pass -e "show global status" | awk 'BEGIN{msg="innodb pool operation status |"}/(Innodb_rows_deleted|Innodb_rows_inserted|Innodb_rows_read|Innodb_rows_updated)[^_]/{msg=msg$1"="$2";;;0;"}END{print msg}'
         exit ${STATE_OK}
 
+# check innodb buffer pool status
+elif [ "$mode" = "innopoolstat" ];then
+	mysql -h$host -P$port -u$username -p$pass -e "show engine innodb status" | grep -oP 'BUFFER POOL AND MEMORY[^-]+-+([^-]*-(?=[^-])[^-]+)*' | grep -oP '(?<=Free buffers)\s+\d+' |grep -oP '\d+' | awk '{fbuf="free buffer pool page | free_buffer_page="$0";;;0;"}END{print fbuf}'
+	exit ${STATE_OK}
 
 fi
 echo host $host port $port user $username  pass $pass mode $mode
