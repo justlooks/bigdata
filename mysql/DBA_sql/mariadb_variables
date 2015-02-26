@@ -192,7 +192,7 @@ innodb_log_group_home_dir	/var/lib/mysql/8/innolog
 innodb_lru_scan_depth	1024
 innodb_max_bitmap_file_size	104857600
 innodb_max_changed_pages	1000000
-innodb_max_dirty_pages_pct	75		   # pool中可以存在的最大dirty page比例
+innodb_max_dirty_pages_pct	75		   # pool中可以存在的最大dirty page比例,超过这个值master thread开始将dirty page刷到磁盘
 innodb_max_dirty_pages_pct_lwm	0		   # 到达这个低水线时开始preflush，以降低dirty page比例，设置为0禁止preflush
 innodb_max_purge_lag	0
 innodb_max_purge_lag_delay	0
@@ -242,7 +242,7 @@ innodb_thread_sleep_delay	10000
 innodb_track_changed_pages	OFF
 innodb_undo_directory	.			   # 制定undo表空间位置
 innodb_undo_logs	128			   # 设置rollback segment的数目，默认为最大值128，需要依靠状态参数Innodb_available_undo_logs来调整,新版本用来取代innodb_rollback_segments
-innodb_undo_tablespaces	0			   # 设置单独的undo表空间，必须在数据库初始化之前执行
+innodb_undo_tablespaces	0			   # 设置单独的undo表空间的文件数目，必须在数据库初始化之前执行
 innodb_use_atomic_writes	OFF		   # 为了防止partial writes，innodb使用double write，但这种机制不是很好，为了降低延时，在FusionIO的directFS filesystem上支持atomic (all or nothing) write ,如果在SSD设备上可以关闭double write打开这个选项，打开这个选项导致innodb_flush_method 如果不是O_DIRECT, ALL_O_DIRECT, or O_DIRECT_NO_FSYNC，则会被设置为O_DIRECT ，innodb_use_fallocate被打开（文件以posix_fallocate方式扩展，而不是在文件末尾写0），如果系统表空间不在支持atomic write设备上，innnodb不会启动，innodb_doublewrite会被强制关闭,对于非表空间文件则返回错误到日志
 innodb_use_fallocate	OFF			   # 使用OS的功能在POSIX systems上使用posix_fallocate系统调用，更有效分配空间
 innodb_use_global_flush_log_at_trx_commit	ON

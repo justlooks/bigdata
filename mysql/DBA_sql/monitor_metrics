@@ -1,0 +1,6 @@
+关于innodb监控指标
+来自show engine innodb status
+
+BUFFER POOL AND MEMORY
+Free buffers (PAGES)
+Percent of dirty pages
