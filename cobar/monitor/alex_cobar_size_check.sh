@@ -1,26 +1,24 @@
 #!/bin/bash
-
 STATE_OK=0
 STATE_WARNING=1
 STATE_CRITICAL=2
 STATE_UNKNOWN=3
 
+if [ "$1" = "" ];then
+echo no instance port ;exit
+fi
 
-cobar_inst=(cobar_a cobar_b cobar_c)
-msg=
-for i in ${cobar_inst[@]};do
-num=$(pgrep -u ${i} java)
-if ps -ef | grep ${num} | grep -v grep | grep CobarStartup > /dev/null 2>&1;then
-msg=${msg}" ${i} instance alived"
-flag=1
+
+BASEDIR=/var/lib/cobar/$1/
+#BASEDIR=/usr/local/nrpe/libexec/plugins/
+threshold=10     # 10G
+
+msg=$(du -sh ${BASEDIR}shard* | awk '$1~/G/{if(substr($1,1,index($1,"G")-1)>'${threshold}'){print $2":"$1}}')
+if [ X"${msg}" == X"" ];then
+flag=${STATE_OK}
+msg="fine, each shard size is under ${threshold}G"
 else
-msg=" ${i} dead"
-echo ${msg}
-exit ${STATE_CRITICAL}
+flag=${STATE_CRITICAL}
+msg="alert : "${msg}
 fi
-done
-
-if [ ${flag} -eq 1 ];then
-echo ${msg}
-exit ${STATE_OK}
-fi
+echo "${msg} ";exit ${flag}
