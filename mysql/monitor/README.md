@@ -17,3 +17,6 @@ alex_mysql_mem_check.sh
 
 6.用于pnp4nagios 自定义template脚本(绘图数据由脚本alex_mysql_repl_check.sh采集)  
 alex_mysql_repl_check.php
+
+7.用于从MySQL慢查询日志中按时间段截取对应的内容  
+alex_get_slow_bytime.pl
