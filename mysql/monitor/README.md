@@ -24,3 +24,5 @@ alex_get_slow_bytime.pl
 8.用于监控系统上下文切换(context switch)  
 alex_sys_csw_check.sh
 
+9.用于监控系统磁盘使用率情况  
+alex_sys_disk_check.sh
