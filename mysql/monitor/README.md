@@ -26,3 +26,7 @@ alex_sys_csw_check.sh
 
 9.用于监控系统磁盘使用率情况  
 alex_sys_disk_check.sh
+
+10.用于监控系统CPU使用情况  
+alex_sys_cpu_check.sh
+
