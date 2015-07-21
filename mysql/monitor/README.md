@@ -20,3 +20,7 @@ alex_mysql_repl_check.php
 
 7.用于从MySQL慢查询日志中按时间段截取对应的内容  
 alex_get_slow_bytime.pl
+
+8.用于监控系统上下文切换(context switch)  
+alex_sys_csw_check.sh
+
