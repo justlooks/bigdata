@@ -30,3 +30,5 @@ alex_sys_disk_check.sh
 10.用于监控系统CPU使用情况  
 alex_sys_cpu_check.sh
 
+11.用于从MySQL慢查询日志中过滤出某用户的查询(或者过滤掉某用户的查询)  
+alex_filter_user_slowlog.pl
