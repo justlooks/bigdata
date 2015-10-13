@@ -1,0 +1,18 @@
+表名和列名不能使用关键字和保留字
+所有关键字列表请参考
+http://dev.mysql.com/doc/refman/5.5/en/keywords.html
+标注状态，类型字段请用tinyint unsigned类型
+所有字段请勿使用not null default null定义，应该用not null default ‘value'
+无特殊情况请使用not null 定义字段
+业务上确定定长列字符串列请使用char类型，其他非定长字符串字段请使用varchar类型，尽量不使用text类型
+数字字段如果没有负数表示的需要，一律加上unsigned
+表示小数使用decimal类型，不要使用double，float类型
+日期时间字段请使用datetime,不涉及到时间的日期字段请使用date类型
+ipv4地址请使用int类型 （关于int和ip的转换参考http://stackoverflow.com/questions/1957637/java-convert-int-to-inetaddress和http://stackoverflow.com/questions/2241229/going-from-127-0-0-1-to-2130706433-and-back-again）
+备份表请使用bak_tablename_yyyymmdd命名（数据库中备份表会被定期清理，其他表请勿使用该命名规则）
+关联表的命名请使用r_关系类型_tablename1_tablename2 ,关系类型为1对多（om),多对多（mm)（对于1对多关系 ，1表在前，多表在后命名为r_om_tablename1_tablename2，对于多对多关系则没特性限制，一般业务数据少的表名在前)
+表名和列名请使用有业务意义的字符串，可以使用下划线连接,为了避免名称过长情况，如果使用下划线，连接的单词请使用缩写（为了命名统一起见，单词和缩写的对应文档由DB部门维护TODO)
+所有用到命名的地方一律使用小写字母（不使用大写字母命名）
+存储过程请使用pr_库名_过程名，自定义函数请使用fn_库名_函数名
+索引命名请使用idx_列名1[_列名2] (如果列名是含下划线，例如user_id ,则索引名为idx_userid)
+在开发中避免使用存储过程，触发器和MySQL视图，以及innodb的外键功能
