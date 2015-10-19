@@ -1,0 +1,7 @@
+#!/bin/bash
+username=selva
+password=secret
+server=$1
+mgmtserver=mgmtserver.domain.com
+commonuser=yourcommonuser
+sshpass -p $password ssh -t -l $username $mgmtserver "sudo su - $commonuser -c 'ssh $server'"
