@@ -1,0 +1,28 @@
+/data/mysql/tqmalldb2.err {
+        daily
+        ifempty
+        copytruncate
+        compress
+        delaycompress
+        rotate 4
+        missingok
+        dateext
+        postrotate
+            /bin/mv /data/mysql/tqmalldb2.err-$(date +%Y%m%d) /data/mysql/tqmalldb2.err-$(date +%Y%m%d -d '1 day ago')
+        endscript
+}
+
+/data/mysql/tqmalldb2-slow.log {
+        daily
+        ifempty
+        copytruncate
+        compress
+        delaycompress
+        rotate 4
+        missingok
+        dateext
+# 纠正为当前时间戳
+        postrotate
+            /bin/mv /data/mysql/tqmalldb2-slow.log-$(date +%Y%m%d) /data/mysql/tqmalldb2-slow.log-$(date +%Y%m%d -d '1 day ago')
+        endscript
+}
