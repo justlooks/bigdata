@@ -1,3 +1,12 @@
+change nickname
+/nick name
+
+register nick
+/msg Nickserv register pass justlooks@gmail.com
+
+identify yourself
+/msg Nickserv identify pass
+
 leave channle
 /wc
 
@@ -36,8 +45,18 @@ send a message to a user
 check window info
 /window
 
+identified user
+
+
+
 ---------------------------------
 
 search for useful script in scripts.irssi.org ,put it in ~/.irssi/scripts ,and type /run <scriptname> to run it,link it in ~/.irssi/scripts/autorun,to let it autorun
 
 whit is  query windows ??
+
+
+----------------------------------
+
+Config irssi on mac
+# brew install irssi
