@@ -1,0 +1,6 @@
+# use vim open file which extension is sql
+alias -s sql=vim
+# use less -MN  open log file
+alias -s log="less -MN"
+# use G to substitude '| grep'
+alias -g G='|grep '
