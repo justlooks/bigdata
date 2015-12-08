@@ -1,0 +1,104 @@
+#!/bin/bash
+
+IPT="/sbin/iptables"
+## one ip one line ##
+BLOCKEDIPS="/root/scripts/blocked_ips.txt"
+SPAMLIST="blockedip"
+SPAMDROPMSG="BLOCKED IP DROP"
+
+PUB_IF="eth1"
+PRV_IF="eth0"
+
+SSH_P="22222"
+NGINX_P="80"
+
+
+## flush chain and delete user-defined chain ##
+$IPT -F
+$IPT -X
+
+
+## default policy is drop everything ##
+$IPT -P INPUT DROP
+$IPT -P FORWARD DROP
+$IPT -P OUTPUT DROP
+
+## load module to kernal ##
+modprobe ip_conntrack
+
+[ -f "$BLOCKEDIPS" ] && BIPS=$(grep -vP '^#|^$' ${BLOCKEDIPS})
+
+## do not limit loopback ##
+$IPT -A INPUT -i lo -j ACCEPT
+$IPT -A OUTPUT -o lo -j ACCEPT
+
+## do not limit all internal packet ##
+$IPT -A INPUT -i ${PRV_IF} -j ACCEPT
+$IPT -A OUTPUT -o ${PRV_IF} -j ACCEPT
+
+## if ip in blacklist ,goto SPAMLIST(just do drop and log) ##
+for ipblock in $BIPS
+do
+   $IPT -A $SPAMLIST -s $ipblock -j LOG --log-prefix "$SPAMDROPMSG "
+   $IPT -A $SPAMLIST -s $ipblock -j DROP
+done
+$IPT -I INPUT -j $SPAMLIST
+$IPT -I OUTPUT -j $SPAMLIST
+$IPT -I FORWARD -j $SPAMLIST
+fi
+## not tested ##
+:<<\EOF
+# Block sync
+$IPT -A INPUT -i ${PUB_IF} -p tcp ! --syn -m state --state NEW  -m limit --limit 5/m --limit-burst 7 -j LOG --log-level 4 --log-prefix "Drop Sync"
+$IPT -A INPUT -i ${PUB_IF} -p tcp ! --syn -m state --state NEW -j DROP
+ 
+# Block Fragments
+$IPT -A INPUT -i ${PUB_IF} -f  -m limit --limit 5/m --limit-burst 7 -j LOG --log-level 4 --log-prefix "Fragments Packets"
+$IPT -A INPUT -i ${PUB_IF} -f -j DROP
+ 
+# Block bad stuff
+$IPT  -A INPUT -i ${PUB_IF} -p tcp --tcp-flags ALL FIN,URG,PSH -j DROP
+$IPT  -A INPUT -i ${PUB_IF} -p tcp --tcp-flags ALL ALL -j DROP
+ 
+$IPT  -A INPUT -i ${PUB_IF} -p tcp --tcp-flags ALL NONE -m limit --limit 5/m --limit-burst 7 -j LOG --log-level 4 --log-prefix "NULL Packets"
+$IPT  -A INPUT -i ${PUB_IF} -p tcp --tcp-flags ALL NONE -j DROP # NULL packets
+ 
+$IPT  -A INPUT -i ${PUB_IF} -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
+ 
+$IPT  -A INPUT -i ${PUB_IF} -p tcp --tcp-flags SYN,FIN SYN,FIN -m limit --limit 5/m --limit-burst 7 -j LOG --log-level 4 --log-prefix "XMAS Packets"
+$IPT  -A INPUT -i ${PUB_IF} -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP #XMAS
+ 
+$IPT  -A INPUT -i ${PUB_IF} -p tcp --tcp-flags FIN,ACK FIN -m limit --limit 5/m --limit-burst 7 -j LOG --log-level 4 --log-prefix "Fin Packets Scan"
+$IPT  -A INPUT -i ${PUB_IF} -p tcp --tcp-flags FIN,ACK FIN -j DROP # FIN packet scans
+ 
+$IPT  -A INPUT -i ${PUB_IF} -p tcp --tcp-flags ALL SYN,RST,ACK,FIN,URG -j DROP
+ 
+# Allow full outgoing connection but no incomming stuff
+$IPT -A INPUT -i ${PUB_IF} -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPT -A OUTPUT -o ${PUB_IF} -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+EOF 
+
+## allow private if use ssh ##
+$IPT -A INPUT -i ${PRV_IF} -p tcp --dport ${SSH_P} -m state --state NEW,ESTABLII
+SHED -j ACCEPT
+$IPT -A OUTPUT -o ${PRV_IF} -p tcp --sport ${SSH_P} -m state --state ESTABLISHEE
+D -j ACCEPT
+
+## allow nginx through ##
+$IPT -A INPUT -i ${PUB_IF} -p tcp --dport ${NGINX_P} -m state --state NEW,ESTABB
+LISHED -j ACCEPT
+$IPT -A OUTPUT -o ${PUB_IF} -p tcp --sport ${NGINX_P} -m state --state ESTABLISS
+HED -j ACCEPT
+
+## allow DNS communication ##
+
+$IPT -A INPUT -i ${PUB_IF} -p udp --sport 53 -j ACCEPT
+$IPT -A OUTPUT -o ${PUB_IF} -p udp --dport 53 -j ACCEPT
+
+## allow ping on both side ##
+$IPT -A INPUT -i ${PUB_IF} -p icmp --icmp-type echo-request -j ACCEPT
+$IPT -A OUTPUT -o ${PUB_IF} -p icmp --icmp-type echo-reply -j ACCEPT
+$IPT -A INPUT -i ${PUB_IF} -p icmp --icmp-type echo-reply -j ACCEPT
+$IPT -A OUTPUT -o ${PUB_IF} -p icmp --icmp-type echo-request -j ACCEPT
+
+
