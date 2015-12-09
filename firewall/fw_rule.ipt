@@ -24,7 +24,8 @@ $IPT -P FORWARD DROP
 $IPT -P OUTPUT DROP
 
 ## load module to kernal ##
-modprobe ip_conntrack
+#modprobe ip_conntrack
+modprobe nf_conntrack
 
 [ -f "$BLOCKEDIPS" ] && BIPS=$(grep -vP '^#|^$' ${BLOCKEDIPS})
 
