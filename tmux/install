@@ -1,0 +1,9 @@
+# brew install tmux
+
+
+# 添加panel缩放方法
+curl -# -O http://tmux.svn.sourceforge.net/viewvc/tmux/trunk/examples/tmux-zoom.sh
+mv tmux-zoom.sh /usr/local/bin/
+chmod +x /usr/local/bin/tmux-zoom.sh
+在~/.tmux.conf文件中添加
+bind C-k run "tmux-zoom.sh"

@@ -1,0 +1,12 @@
+# conntrack 最大容量默认
+net.netfilter.nf_conntrack_max
+
+调整命令 
+echo "xxx" > /proc/sys/net/netfilter/nf_conntrack_max
+
+看bucket大小 (这个无法在机器运行时调整，只能在启动时传入参数)
+cat /sys/module/nf_conntrack/parameters/hashsize
+
+看占用memory大小
+# grep conn /var/log/messages
+Dec  8 15:43:49 iZ233bte0ydZ kernel: nf_conntrack version 0.5.0 (16384 buckets, 65536 max)

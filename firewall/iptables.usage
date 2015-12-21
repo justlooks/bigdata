@@ -1,0 +1,8 @@
+显示防火墙规则
+iptables -L -n -v
+
+保存iptables规则到文件
+service iptables save
+
+恢复iptables规则
+iptables-restore < /root/my.active.firewall.rules

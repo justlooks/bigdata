@@ -24,7 +24,7 @@ $IPT -P FORWARD DROP
 $IPT -P OUTPUT DROP
 
 ## load module to kernal ##
-#modprobe ip_conntrack
+#modprobe ip_conntrack (the old version use)
 modprobe nf_conntrack
 
 [ -f "$BLOCKEDIPS" ] && BIPS=$(grep -vP '^#|^$' ${BLOCKEDIPS})
@@ -102,4 +102,7 @@ $IPT -A OUTPUT -o ${PUB_IF} -p icmp --icmp-type echo-reply -j ACCEPT
 $IPT -A INPUT -i ${PUB_IF} -p icmp --icmp-type echo-reply -j ACCEPT
 $IPT -A OUTPUT -o ${PUB_IF} -p icmp --icmp-type echo-request -j ACCEPT
 
+## IP spoofing ##
+$IPT -A INPUT -i ${PUB_IF} -s 192.168.0.0/24 -j DROP
+$IPT -A INPUT -i ${PUB_IF} -s 10.0.0.0/8 -j DROP
 
