@@ -38,8 +38,6 @@ while(<FILE>){
         }
             if($pflag && m/^\s+`$col` /){
                 s/,$/;/;
-		s/(?<=[^;])$/;/;
-                #print;
                 if(m/COLLATE/){
                     s/CHARACTER SET utf8 COLLATE utf8_bin//;
                     s/COLLATE utf8_bin//;
