@@ -6,8 +6,9 @@
 # step 1 : use sql get all column name which is not default collate
 # select TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME,CHARACTER_SET_NAME,COLLATION_NAME,COLUMN_TYPE from columns where CHARACTER_SET_NAME='utf8' and (column_type like '%char%' or column_type like '%text%') and table_schema not in ('information_schema','mysql','performance_schema') and COLLATION_NAME <>'utf8_general_ci'
 
-# step 2 : use mysqldump get DDL from mysql
-# mysqldump -uroot -ppass -S/data/mysql/mysql.sock --skip-triggers --no-data --no-create-db --skip-opt --all-databases > stable.sql
+# step 2 : use mysqldump get DDL from mysql ( do not use --skip-opt option ,it will drop auto_increment in DDL )
+# mysqldump -uroot -ppass -S/data/mysql/mysql.sock --skip-triggers --no-data --no-create-db --all-databases > stable.sql
+
 
 # step 3 : get all schema list which need op
 # for i in `cat aa`;do perl drop_collact.pl $i;done
