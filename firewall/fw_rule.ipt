@@ -80,16 +80,12 @@ $IPT -A OUTPUT -o ${PUB_IF} -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
 EOF 
 
 ## allow private if use ssh ##
-$IPT -A INPUT -i ${PRV_IF} -p tcp --dport ${SSH_P} -m state --state NEW,ESTABLII
-SHED -j ACCEPT
-$IPT -A OUTPUT -o ${PRV_IF} -p tcp --sport ${SSH_P} -m state --state ESTABLISHEE
-D -j ACCEPT
+$IPT -A INPUT -i ${PRV_IF} -p tcp --dport ${SSH_P} -m state --state NEW,ESTABLISHED -j ACCEPT
+$IPT -A OUTPUT -o ${PRV_IF} -p tcp --sport ${SSH_P} -m state --state ESTABLISHED -j ACCEPT
 
 ## allow nginx through ##
-$IPT -A INPUT -i ${PUB_IF} -p tcp --dport ${NGINX_P} -m state --state NEW,ESTABB
-LISHED -j ACCEPT
-$IPT -A OUTPUT -o ${PUB_IF} -p tcp --sport ${NGINX_P} -m state --state ESTABLISS
-HED -j ACCEPT
+$IPT -A INPUT -i ${PUB_IF} -p tcp --dport ${NGINX_P} -m state --state NEW,ESTABLISHED -j ACCEPT
+$IPT -A OUTPUT -o ${PUB_IF} -p tcp --sport ${NGINX_P} -m state --state ESTABLISHED -j ACCEPT
 
 ## allow DNS communication ##
 
