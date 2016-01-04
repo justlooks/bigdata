@@ -38,6 +38,8 @@ $IPT -A INPUT -i ${PRV_IF} -j ACCEPT
 $IPT -A OUTPUT -o ${PRV_IF} -j ACCEPT
 
 ## if ip in blacklist ,goto SPAMLIST(just do drop and log) ##
+if [ -f "${BLOCKEDIPS}" -a -s "${BLOCKEDIPS}" ];then
+$IPT -N $SPAMLIST
 for ipblock in $BIPS
 do
    $IPT -A $SPAMLIST -s $ipblock -j LOG --log-prefix "$SPAMDROPMSG "
