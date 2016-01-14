@@ -1,0 +1,7 @@
+tomcat调优配置项：
+catalina.sh 加入：JAVA_OPTS="-server -Xms1400M -Xmx1400M -Xss512k -XX:+AggressiveOpts -XX:+UseBiasedLocking -XX:PermSize=128M -XX:MaxPermSize=256M -XX:+DisableExplicitGC -XX:MaxTenuringThreshold=31 -XX:+UseConcMarkSweepGC -XX:+UseParNewGC  -XX:+CMSParallelRemarkEnabled -XX:+UseCMSCompactAtFullCollection -XX:LargePageSizeInBytes=128m  -XX:+UseFastAccessorMethods -XX:+UseCMSInitiatingOccupancyOnly -Djava.awt.headless=true”
+server.xml 加入：   <Connector port="8080" protocol="HTTP/1.1"
+               connectionTimeout="20000" minSpareThreads="25" maxSpareThreads="75"
+               enableLookups="false" disableUploadTimeout="true" useURIValidationHack="false"
+               acceptCount="300"  maxThreads="300" maxProcessors="1000" minProcessors="5"
+               redirectPort="8443" />
