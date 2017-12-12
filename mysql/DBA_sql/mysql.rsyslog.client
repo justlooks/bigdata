@@ -1,0 +1,17 @@
+ruleset(name="remote") {
+    action(type="omfwd"
+       Protocol="tcp"
+       Target="10.117.186.63"
+       Port="514")
+    stop
+}
+
+input(type="imfile"
+    File="/data/mysql3306/dev_mysql1-slow.log"
+    Facility="local7"
+    Severity="notice"
+    Tag="mysql"
+    PersistStateInterval="1"
+    startmsg.regex="^# Time:"
+    escapeLF="on"
+    Ruleset="remote")

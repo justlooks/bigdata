@@ -1,0 +1,30 @@
+module(load="imptcp")
+template(name="textformat" type="string" string="%TIMESTAMP:::date-rfc3339% %HOSTNAME% %msg:::sp-if-no-1st-sp%%msg:::drop-last-lf%\n")
+template(name="RemoteLogs" type="string" string="/data/mysqllog-store/%HOSTNAME%/%PROGRAMNAME%-%$year%%$month%%$day%.log")
+
+#ruleset(name="mysqlslowlog"){
+#    if $programname == 'mysql' then {
+#       action(type="omfile"
+#         dynaFile="RemoteLogs"
+#          template="textformat")
+#       stop
+#    }
+#    stop
+#}
+
+
+ruleset(name="mysqlslowlog"){
+#    set $.numline=re_extract($msg,"Rows_examined: ([0-9]+)",1,0,"Rows_examined: 0");
+#    set $.numex=field($.numline," ",2);
+#    if ($msg contains "Rows_examined: [0-9]{3,}") and ($programname == 'mysql') then {
+    if re_match($msg, "Rows_examined: [0-9]{3,}") and ($programname == 'mysql') then {
+        action(type="omfile"
+          dynaFile="RemoteLogs"
+          template="textformat")
+        stop
+    } else {
+        stop
+    }
+}
+
+input(type="imptcp" port="514" ruleset="mysqlslowlog")

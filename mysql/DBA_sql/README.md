@@ -24,3 +24,10 @@ mysql锁的监控脚本
 
 9.performance_schema
 查看未被使用的用户
+
+10. mysql.rsyslog
+用于mysql慢查日志过滤配置(发送端）
+
+11. mysql.rsyslog.client
+用于mysql慢查日志接受配置（接受端）
+
